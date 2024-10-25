@@ -25,6 +25,7 @@ AChaseAIController::AChaseAIController()
     // Create the sight config
     SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 
+	PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AChaseAIController::OnTargetPerceptionUpdated);
 }
 
 // Called when the game starts or when spawned
@@ -58,6 +59,7 @@ void AChaseAIController::Tick(float DeltaTime)
 
 void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus const Stimulus)
 {
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"EventFired");
 	// Check actor is a TP3ShootCharacter
 	ATP3ShootCharacter* ShootCharacter = Cast<ATP3ShootCharacter>(Actor);
 	// Get the team id of the AI character
@@ -75,11 +77,13 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 			BlackboardComponent->SetValueAsBool("CanSeePlayer", true);
 			// Set target actor
 			BlackboardComponent->SetValueAsObject("Target", Actor);
+			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Enter AI Sight");
 		}
 		else
 		{
 			BlackboardComponent->SetValueAsBool("CanSeePlayer", false);
 			BlackboardComponent->SetValueAsObject("Target", nullptr);
+			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Max Age Reset");
 		}
 	}
 }

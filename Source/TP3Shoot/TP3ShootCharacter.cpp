@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "TP3ShootCharacter.h"
+
+#include "AIShootCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -14,6 +16,35 @@
 
 //////////////////////////////////////////////////////////////////////////
 // ATP3ShootCharacter
+
+void ATP3ShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
+{
+	FHitResult* HitResult = new FHitResult();
+	FCollisionQueryParams* CQP = new FCollisionQueryParams();
+	ECollisionChannel Channel = ECC_Visibility; // Or another channel of your choice
+	if(GetWorld()->LineTraceSingleByChannel(*HitResult, StartTrace, EndTrace,Channel, *CQP))
+	{
+		DrawDebugLine(
+		GetWorld(),
+		StartTrace,
+		EndTrace,
+		FColor(255, 0, 0),
+		false, 2, 0,
+		2
+		);
+		AAIShootCharacter* aiChar = Cast<AAIShootCharacter>(HitResult->GetActor());
+		if(aiChar != NULL)
+		{
+				aiChar->OnHit();
+		}
+	}
+}
+
+void ATP3ShootCharacter::OnHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+}
+
 
 ATP3ShootCharacter::ATP3ShootCharacter()
 {
@@ -137,11 +168,12 @@ void ATP3ShootCharacter::Fire()
 		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
 		// Get Rotation Forward Vector
-		ForwardVector = FollowCamera->GetForwardVector();
+		ForwardVector = SK_Gun->GetRightVector();
 
 		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
+	Raycast(Start,LineTraceEnd);
 }
 
 

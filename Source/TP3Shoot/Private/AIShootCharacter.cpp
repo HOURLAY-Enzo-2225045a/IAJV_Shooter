@@ -11,7 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "TP3Shoot/TP3ShootCharacter.h"
 
 
 // Sets default values
@@ -117,6 +117,32 @@ void AAIShootCharacter::StopAiming()
 {
 	IsAiming = false;
 }
+void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
+{
+	FHitResult* HitResult = new FHitResult();
+	FCollisionQueryParams* CQP = new FCollisionQueryParams();
+	ECollisionChannel Channel = ECC_Visibility; // Or another channel of your choice
+	if(GetWorld()->LineTraceSingleByChannel(*HitResult, StartTrace, EndTrace,Channel, *CQP))
+	{
+		DrawDebugLine(
+		GetWorld(),
+		StartTrace,
+		EndTrace,
+		FColor(0, 255, 0),
+		false, 2, 0,
+		5
+		);
+		ATP3ShootCharacter* APlayer = Cast<ATP3ShootCharacter>(HitResult->GetActor());
+		if(APlayer != NULL)
+		{
+			APlayer->OnHit();
+		}
+	}
+}
+void AAIShootCharacter::OnHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+}
 
 void AAIShootCharacter::Fire()
 {
@@ -137,11 +163,12 @@ void AAIShootCharacter::Fire()
 		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
 		// Get Rotation Forward Vector
-		ForwardVector = FollowCamera->GetForwardVector();
+		ForwardVector = SK_Gun->GetRightVector();
 
 		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
+	Raycast(Start, LineTraceEnd);
 }
 
 

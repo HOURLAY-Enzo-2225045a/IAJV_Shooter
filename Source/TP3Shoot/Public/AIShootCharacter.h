@@ -27,7 +27,7 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
-
+	
 protected:
 
 	// Add a gun skeletal mesh component
@@ -77,8 +77,9 @@ protected:
 	void Aim();
 
 	void StopAiming();
+	void Raycast(FVector StartTrace, FVector EndTrace);
 
-	// Firing function
+// Firing function
 	void Fire();
 
 	void BoostSpeed();
@@ -98,8 +99,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-public:
-
 	// Is Aiming
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aiming")
 	bool IsAiming;
@@ -107,5 +106,6 @@ public:
 	// Is Firing
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
+	void OnHit();
 
 };

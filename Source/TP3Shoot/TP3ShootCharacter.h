@@ -19,6 +19,9 @@ class ATP3ShootCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+private:
+	void Raycast(FVector StartTrace, FVector EndTrace);
+
 
 public:
 	ATP3ShootCharacter();
@@ -97,7 +100,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-public:
+	void OnHit();
 
 	// Is Aiming
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aiming")

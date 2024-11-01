@@ -163,7 +163,7 @@ void AAIShootCharacter::Fire()
 		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
 		// Get Rotation Forward Vector
-		ForwardVector = SK_Gun->GetRightVector();
+		ForwardVector = FollowCamera->GetForwardVector();
 
 		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);

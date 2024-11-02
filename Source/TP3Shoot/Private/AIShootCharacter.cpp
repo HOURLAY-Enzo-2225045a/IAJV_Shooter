@@ -74,34 +74,7 @@ void AAIShootCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AAIShootCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Move Right / Left", this, &AAIShootCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AAIShootCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AAIShootCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AAIShootCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AAIShootCharacter::TouchStopped);
-
-	// Aiming 
-	PlayerInputComponent->BindAction("Aiming", IE_Pressed, this, &AAIShootCharacter::Aim);
-	PlayerInputComponent->BindAction("Aiming", IE_Released, this, &AAIShootCharacter::StopAiming);
-
-	// Fire
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAIShootCharacter::Fire);
-
-	// Boost Speed
-	PlayerInputComponent->BindAction("BoostSpeed", IE_Pressed, this, &AAIShootCharacter::BoostSpeed);
-	PlayerInputComponent->BindAction("BoostSpeed", IE_Released, this, &AAIShootCharacter::RemoveSpeedBoost);
+	
 }
 
 void AAIShootCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
@@ -150,7 +123,7 @@ void AAIShootCharacter::OnHit()
 	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
 }
 
-void AAIShootCharacter::Fire()
+void AAIShootCharacter::Fire(FVector TargetLocation)
 {
 	FVector Start, LineTraceEnd, ForwardVector;
 
@@ -159,8 +132,8 @@ void AAIShootCharacter::Fire()
 
 		Start = FollowCamera->GetComponentLocation();
 
-		ForwardVector = FollowCamera->GetForwardVector();
-
+		ForwardVector = (TargetLocation - Start).GetSafeNormal();// FollowCamera->GetForwardVector();
+			
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
 	else {

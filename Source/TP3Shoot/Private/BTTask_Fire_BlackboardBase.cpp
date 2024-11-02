@@ -6,6 +6,7 @@
 #include "AIShootCharacter.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "TP3Shoot/TP3ShootCharacter.h"
 
 UBTTask_Fire_BlackboardBase::UBTTask_Fire_BlackboardBase()
 {
@@ -17,20 +18,17 @@ EBTNodeResult::Type UBTTask_Fire_BlackboardBase::ExecuteTask(UBehaviorTreeCompon
 {
 	// Get AIController
 	AAIController* AIController = OwnerComp.GetAIOwner();
-
+	AAIShootCharacter* AIActor = Cast<AAIShootCharacter>(AIController->GetPawn());
+	UBlackboardComponent* Blackboard = AIController->GetBlackboardComponent();
 	// Get TargetPosition
-	AAIShootCharacter* Target = Cast<AAIShootCharacter>(AIController->GetBlackboardComponent()->GetValueAsObject("Target"));
-
-	if (Target)
+	if(AIActor)
 	{
-		Target->Fire();
-	}
-	else
+		AIActor->Fire(Blackboard->GetValueAsVector("TargetLocation"));
+	}else
 	{
-		// Optionally log an error or handle the case where Target is not valid
-		UE_LOG(LogTemp, Warning, TEXT("Target is nullptr in UBTTask_Fire_BlackboardBase::ExecuteTask"));
-		return EBTNodeResult::Failed; // or handle as appropriate
+		UE_LOG(LogTemp, Warning, TEXT("AIActor is nullptr in UBTTask_Fire_BlackboardBase::ExecuteTask"));
 	}
+	
 	
 	// // Obtain the Navigation System and find a random location
 	// const UNavigationSystemV1* NavSystem {UNavigationSystemV1::GetCurrent(GetWorld())};

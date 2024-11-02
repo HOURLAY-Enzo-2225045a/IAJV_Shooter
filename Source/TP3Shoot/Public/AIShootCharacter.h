@@ -111,5 +111,5 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
 	void OnHit();
-	void Fire();
+	void Fire(FVector TargetLocation);
 };

@@ -1,6 +1,5 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TP3ShootCharacter.h"
 
 #include "AIShootCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -12,43 +11,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "TP3Shoot/TP3ShootCharacter.h"
 
 
-//////////////////////////////////////////////////////////////////////////
-// ATP3ShootCharacter
-
-void ATP3ShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
+// Sets default values
+AAIShootCharacter::AAIShootCharacter()
 {
-	FHitResult* HitResult = new FHitResult();
-	FCollisionQueryParams* CQP = new FCollisionQueryParams();
-	ECollisionChannel Channel = ECC_Visibility; // Or another channel of your choice
-	if(GetWorld()->LineTraceSingleByChannel(*HitResult, StartTrace, EndTrace,Channel, *CQP))
-	{
-		DrawDebugLine(
-		GetWorld(),
-		StartTrace,
-		EndTrace,
-		FColor(255, 0, 0),
-		false, 2, 0,
-		2
-		);
-		AAIShootCharacter* aiChar = Cast<AAIShootCharacter>(HitResult->GetActor());
-		if(aiChar != NULL)
-		{
-				aiChar->OnHit();
-		}
-	}
-}
-
-void ATP3ShootCharacter::OnHit()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
-}
-
-
-ATP3ShootCharacter::ATP3ShootCharacter()
-{
-	// Set size for collision capsule
+ 		// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// set our turn rate for input
@@ -92,64 +61,69 @@ ATP3ShootCharacter::ATP3ShootCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void AAIShootCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	ChaseAIController = Cast<AChaseAIController>(GetController());
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ATP3ShootCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void AAIShootCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ATP3ShootCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("Move Right / Left", this, &ATP3ShootCharacter::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &ATP3ShootCharacter::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &ATP3ShootCharacter::LookUpAtRate);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ATP3ShootCharacter::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ATP3ShootCharacter::TouchStopped);
-
-	// Aiming 
-	PlayerInputComponent->BindAction("Aiming", IE_Pressed, this, &ATP3ShootCharacter::Aim);
-	PlayerInputComponent->BindAction("Aiming", IE_Released, this, &ATP3ShootCharacter::StopAiming);
-
-	// Fire
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ATP3ShootCharacter::Fire);
-
-	// Boost Speed
-	PlayerInputComponent->BindAction("BoostSpeed", IE_Pressed, this, &ATP3ShootCharacter::BoostSpeed);
-	PlayerInputComponent->BindAction("BoostSpeed", IE_Released, this, &ATP3ShootCharacter::RemoveSpeedBoost);
+	
 }
 
-void ATP3ShootCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
+void AAIShootCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
 	Jump();
 }
 
-void ATP3ShootCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
+void AAIShootCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 	StopJumping();
 }
 
-void ATP3ShootCharacter::Aim()
+void AAIShootCharacter::Aim()
 {
 	IsAiming = true;
 }
 
-void ATP3ShootCharacter::StopAiming()
+void AAIShootCharacter::StopAiming()
 {
 	IsAiming = false;
 }
+void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
+{
+	FHitResult* HitResult = new FHitResult();
+	FCollisionQueryParams* CQP = new FCollisionQueryParams();
+	ECollisionChannel Channel = ECC_Visibility; // Or another channel of your choice
+	if(GetWorld()->LineTraceSingleByChannel(*HitResult, StartTrace, EndTrace,Channel, *CQP))
+	{
+		DrawDebugLine(
+		GetWorld(),
+		StartTrace,
+		EndTrace,
+		FColor(0, 255, 0),
+		false, 2, 0,
+		5
+		);
+		ATP3ShootCharacter* APlayer = Cast<ATP3ShootCharacter>(HitResult->GetActor());
+		if(APlayer != NULL)
+		{
+			APlayer->OnHit();
+		}
+	}
+}
+void AAIShootCharacter::OnHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+}
 
-void ATP3ShootCharacter::Fire()
+void AAIShootCharacter::Fire(FVector TargetLocation)
 {
 	FVector Start, LineTraceEnd, ForwardVector;
 
@@ -158,8 +132,8 @@ void ATP3ShootCharacter::Fire()
 
 		Start = FollowCamera->GetComponentLocation();
 
-		ForwardVector = FollowCamera->GetForwardVector();
-
+		ForwardVector = (TargetLocation - Start).GetSafeNormal();// FollowCamera->GetForwardVector();
+			
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
 	else {
@@ -168,17 +142,17 @@ void ATP3ShootCharacter::Fire()
 		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
 		// Get Rotation Forward Vector
-		ForwardVector = SK_Gun->GetRightVector();
+		ForwardVector = FollowCamera->GetForwardVector();
 
 		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
-	Raycast(Start,LineTraceEnd);
+	Raycast(Start, LineTraceEnd);
 }
 
 
 
-void ATP3ShootCharacter::BoostSpeed()
+void AAIShootCharacter::BoostSpeed()
 {
 	// Set Max walking speed to 800
 	GetCharacterMovement()->MaxWalkSpeed = 800.f;
@@ -194,14 +168,14 @@ void ATP3ShootCharacter::BoostSpeed()
 		}, 4, false);
 }
 
-void ATP3ShootCharacter::RemoveSpeedBoost()
+void AAIShootCharacter::RemoveSpeedBoost()
 {
 	// Set Max walking speed to 500
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 }
 
 
-void ATP3ShootCharacter::FireParticle(FVector Start, FVector Impact)
+void AAIShootCharacter::FireParticle(FVector Start, FVector Impact)
 {
 	if (!ParticleStart || !ParticleImpact) return;
 
@@ -220,19 +194,19 @@ void ATP3ShootCharacter::FireParticle(FVector Start, FVector Impact)
 
 }
 
-void ATP3ShootCharacter::TurnAtRate(float Rate)
+void AAIShootCharacter::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
 }
 
-void ATP3ShootCharacter::LookUpAtRate(float Rate)
+void AAIShootCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
 }
 
-void ATP3ShootCharacter::MoveForward(float Value)
+void AAIShootCharacter::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
@@ -246,7 +220,7 @@ void ATP3ShootCharacter::MoveForward(float Value)
 	}
 }
 
-void ATP3ShootCharacter::MoveRight(float Value)
+void AAIShootCharacter::MoveRight(float Value)
 {
 	if ( (Controller != nullptr) && (Value != 0.0f) )
 	{
@@ -260,3 +234,7 @@ void ATP3ShootCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+
+
+

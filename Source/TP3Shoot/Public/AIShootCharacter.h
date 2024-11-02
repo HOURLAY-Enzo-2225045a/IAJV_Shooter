@@ -1,15 +1,17 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ChaseAIController.h"
 #include "GameFramework/Character.h"
-#include "TP3ShootCharacter.generated.h"
+#include "AIShootCharacter.generated.h"
 
 UCLASS(config=Game)
-class ATP3ShootCharacter : public ACharacter
+
+class TP3SHOOT_API AAIShootCharacter : public ACharacter
 {
-	GENERATED_BODY()
+GENERATED_BODY()
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -18,19 +20,20 @@ class ATP3ShootCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-	
-	void Raycast(FVector StartTrace, FVector EndTrace);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ChaseAIController, meta = (AllowPrivateAccess = "true"))
+	AChaseAIController* ChaseAIController;
+	
 
 public:
-	ATP3ShootCharacter();
+	AAIShootCharacter();
+void BeginPlay();
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
-
+	
 protected:
-
 	// Add a gun skeletal mesh component
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* SK_Gun;
@@ -78,9 +81,10 @@ protected:
 	void Aim();
 
 	void StopAiming();
+	void Raycast(FVector StartTrace, FVector EndTrace);
 
-	// Firing function
-	void Fire();
+// Firing function
+
 
 	void BoostSpeed();
 
@@ -99,8 +103,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	void OnHit();
-
 	// Is Aiming
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aiming")
 	bool IsAiming;
@@ -108,6 +110,6 @@ public:
 	// Is Firing
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
-
+	void OnHit();
+	void Fire(FVector TargetLocation);
 };
-

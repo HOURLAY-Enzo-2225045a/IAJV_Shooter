@@ -25,6 +25,7 @@ GENERATED_BODY()
 	AChaseAIController* ChaseAIController;
 	
 
+
 public:
 	AAIShootCharacter();
 void BeginPlay();
@@ -34,6 +35,8 @@ void BeginPlay();
 	float TurnRateGamepad;
 	
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float HealthToMaxRatio;
 	// Add a gun skeletal mesh component
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* SK_Gun;
@@ -82,6 +85,9 @@ protected:
 
 	void StopAiming();
 	void Raycast(FVector StartTrace, FVector EndTrace);
+	
+	UPROPERTY(EditAnywhere, Category = Gameplay)
+	int Health;
 
 // Firing function
 
@@ -91,8 +97,7 @@ protected:
 	void RemoveSpeedBoost();
 
 	void FireParticle(FVector Start, FVector Impact);
-
-protected:
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
@@ -110,6 +115,7 @@ public:
 	// Is Firing
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
-	void OnHit();
-	void Fire(FVector TargetLocation);
+	void OnHit(int damage);
+void Die();
+void Fire(FVector TargetLocation);
 };

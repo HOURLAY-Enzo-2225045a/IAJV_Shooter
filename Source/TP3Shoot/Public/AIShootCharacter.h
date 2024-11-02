@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ChaseAIController.h"
 #include "GameFramework/Character.h"
 #include "AIShootCharacter.generated.h"
 
@@ -20,16 +21,19 @@ GENERATED_BODY()
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ChaseAIController, meta = (AllowPrivateAccess = "true"))
+	AChaseAIController* ChaseAIController;
+	
 
 public:
 	AAIShootCharacter();
+void BeginPlay();
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
 	
 protected:
-
 	// Add a gun skeletal mesh component
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* SK_Gun;
@@ -80,7 +84,7 @@ protected:
 	void Raycast(FVector StartTrace, FVector EndTrace);
 
 // Firing function
-	void Fire();
+
 
 	void BoostSpeed();
 
@@ -107,5 +111,5 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
 	void OnHit();
-
+	void Fire();
 };

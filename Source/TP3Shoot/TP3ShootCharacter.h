@@ -18,8 +18,7 @@ class ATP3ShootCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-
-private:
+	
 	void Raycast(FVector StartTrace, FVector EndTrace);
 
 

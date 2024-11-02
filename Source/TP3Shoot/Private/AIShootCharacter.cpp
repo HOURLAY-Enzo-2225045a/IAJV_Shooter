@@ -2,12 +2,15 @@
 
 
 #include "AIShootCharacter.h"
+
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Components/TimelineComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -56,6 +59,12 @@ AAIShootCharacter::AAIShootCharacter()
 	SK_Gun->SetupAttachment(GetMesh());
 	// Set parent socket
 	SK_Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("GripPoint"));
+	// In the constructor
+	// HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidgetComponent"));
+	// HealthWidgetComponent->SetupAttachment(RootComponent);
+	//
+	// // Set the widget class (assuming you have a UUserWidget subclass called UHealthWidget)
+	// HealthWidgetComponent->SetWidgetClass(UHealthWidget::StaticClass());
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -64,6 +73,8 @@ AAIShootCharacter::AAIShootCharacter()
 void AAIShootCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	HealthToMaxRatio = 1.f;
+	Health = 100;
 	ChaseAIController = Cast<AChaseAIController>(GetController());
 }
 
@@ -118,9 +129,23 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		}
 	}
 }
-void AAIShootCharacter::OnHit()
+void AAIShootCharacter::OnHit(int damage)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+	Health -= damage;
+	HealthToMaxRatio = Health / 100.f;
+	//change widget here
+	
+	if (Health<0.01)
+	{
+		Die();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
+}
+
+void AAIShootCharacter::Die()
+{
+	Health = 0;
+	Destroy();
 }
 
 void AAIShootCharacter::Fire(FVector TargetLocation)

@@ -35,14 +35,14 @@ void ATP3ShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		AAIShootCharacter* aiChar = Cast<AAIShootCharacter>(HitResult->GetActor());
 		if(aiChar != NULL)
 		{
-				aiChar->OnHit(20);
+				aiChar->OnHit(20,this);
 		}
 	}
 }
 
 void ATP3ShootCharacter::OnHit()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+	UE_LOG(LogTemp, Display, TEXT("Hit!"));
 }
 
 

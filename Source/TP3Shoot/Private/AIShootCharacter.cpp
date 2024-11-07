@@ -136,22 +136,22 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		}
 		if(AICharacter !=NULL)
 		{
-			AICharacter->OnHit(20);
+			AICharacter->OnHit(20,this);
 		}
 	}
 }
-void AAIShootCharacter::OnHit(int damage)
+void AAIShootCharacter::OnHit(int damage, ACharacter* ShootingActor)
 {
 	Health -= damage;
 	HealthToMaxRatio = Health / 100.f;
 	//change widget here
-	
+	ChaseAIController->setTarget(ShootingActor);
+
 	if (Health<0.01)
 	{
 		Die();
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
-	ChaseAIController->setTarget(this);
+	// UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
 
 void AAIShootCharacter::Die()

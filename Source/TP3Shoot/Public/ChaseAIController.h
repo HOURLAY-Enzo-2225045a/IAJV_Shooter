@@ -27,6 +27,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	UFUNCTION()
+	void OnTargetPerceptionForgotten(AActor* Actor);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))

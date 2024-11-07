@@ -27,6 +27,7 @@ AChaseAIController::AChaseAIController()
     SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
 
 	PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AChaseAIController::OnTargetPerceptionUpdated);
+	PerceptionComponent->OnTargetPerceptionForgotten.AddDynamic(this, &AChaseAIController::OnTargetPerceptionForgotten);
 }
 
 // Called when the game starts or when spawned
@@ -87,6 +88,8 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	// check if stimulus is sight
 	if (Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 	{
+		float Age = Stimulus.GetAge();
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Stimulus Age: %f"), Age));
 		// if stimulus is sight, check if stimulus is sensed
 		if (Stimulus.WasSuccessfullySensed())
 		{
@@ -94,14 +97,29 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 			BlackboardComponent->SetValueAsBool("CanSeePlayer", true);
 			// Set target actor
 			BlackboardComponent->SetValueAsObject("Target", ChosenCharacter);
+			//BlackboardComponent->SetValueAsVector("LastKnownLocation", ChosenCharacter->GetActorLocation());
 			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Enter AI Sight");
 		}
-		else
+		/*else 
 		{
-			BlackboardComponent->SetValueAsBool("CanSeePlayer", false);
-			BlackboardComponent->SetValueAsObject("Target", nullptr);
-			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Max Age Reset");
-		}
+			if (Stimulus.GetAge() < 6.0f)
+			{
+				BlackboardComponent->SetValueAsVector("LastKnownPosition", Stimulus.StimulusLocation);
+			}
+			else 
+			{
+				BlackboardComponent->ClearValue("LastKnownPosition");
+				BlackboardComponent->SetValueAsBool("CanSeePlayer", false);
+			}
+			GEngine->AddOnScreenDebugMessage(4, 5.0f, FColor::Orange, "Lost Sight, Keeping Last Known Position");
+		}*/
 	}
+}
+
+void AChaseAIController::OnTargetPerceptionForgotten(AActor* Actor)
+{
+	BlackboardComponent->SetValueAsBool("CanSeePlayer", false);
+	BlackboardComponent->SetValueAsObject("Target", nullptr);
+	GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Max Age Reset");
 }
 

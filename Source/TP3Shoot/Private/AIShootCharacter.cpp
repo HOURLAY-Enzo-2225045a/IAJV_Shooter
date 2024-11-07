@@ -151,6 +151,7 @@ void AAIShootCharacter::OnHit(int damage)
 		Die();
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
+	ChaseAIController->setTarget(this);
 }
 
 void AAIShootCharacter::Die()

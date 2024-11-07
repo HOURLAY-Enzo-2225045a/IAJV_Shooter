@@ -27,6 +27,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	UFUNCTION()
+	void setTarget(ACharacter* ACharacter);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
@@ -45,4 +47,6 @@ private:
 	// Sight sense config
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	class UAISenseConfig_Sight* SightConfig;
+
+	
 };

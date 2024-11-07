@@ -22,18 +22,25 @@ EBTNodeResult::Type UBTTask_FindTargetLocation::ExecuteTask(UBehaviorTreeCompone
 
 	// Get TargetPosition
 	const AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject("Target"));
-	const FVector TargetPosition = Target->GetActorLocation();
-
-	// Obtain the Navigation System and find a random location
-	const UNavigationSystemV1* NavSystem {UNavigationSystemV1::GetCurrent(GetWorld())};
-	if(IsValid(NavSystem) && NavSystem->GetRandomPointInNavigableRadius(TargetPosition, 5.0, Location))
+	if(Target)
 	{
-		AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+		const FVector TargetPosition = Target->GetActorLocation();
+		const UNavigationSystemV1* NavSystem {UNavigationSystemV1::GetCurrent(GetWorld())};
+		if(IsValid(NavSystem) && NavSystem->GetRandomPointInNavigableRadius(TargetPosition, 5.0, Location))
+		{
+			AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, Location.Location);
+		}
+
+		// Signal the BehaviorTreeComponent that the task finished with a Success!
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);	
+		return EBTNodeResult::Succeeded;
+	}else
+	{
+		return EBTNodeResult::Failed;
 	}
 
-	// Signal the BehaviorTreeComponent that the task finished with a Success!
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);	
-	return EBTNodeResult::Succeeded;
+	// Obtain the Navigation System and find a random location
+	
 }
 
 FString UBTTask_FindTargetLocation::GetStaticDescription() const

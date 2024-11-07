@@ -70,6 +70,11 @@ AAIShootCharacter::AAIShootCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+bool AAIShootCharacter::GetIsEnemy()
+{
+	return isEnemy;
+}
+
 void AAIShootCharacter::BeginPlay()
 {
 	Super::BeginPlay();

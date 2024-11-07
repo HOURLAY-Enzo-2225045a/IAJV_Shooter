@@ -28,6 +28,8 @@ GENERATED_BODY()
 
 public:
 	AAIShootCharacter();
+	bool GetIsEnemy();
+
 void BeginPlay();
 
 /** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -35,6 +37,11 @@ void BeginPlay();
 	float TurnRateGamepad;
 	
 protected:
+	
+// Particle Start
+	UPROPERTY(EditAnywhere, Category = Gameplay)
+	bool isEnemy;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay")
 	float HealthToMaxRatio;
 	// Add a gun skeletal mesh component

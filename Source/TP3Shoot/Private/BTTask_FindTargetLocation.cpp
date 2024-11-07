@@ -21,7 +21,7 @@ EBTNodeResult::Type UBTTask_FindTargetLocation::ExecuteTask(UBehaviorTreeCompone
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
 	// Get TargetPosition
-	const ATP3ShootCharacter* Target = Cast<ATP3ShootCharacter>(AIController->GetBlackboardComponent()->GetValueAsObject("Target"));
+	const AActor* Target = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject("Target"));
 	const FVector TargetPosition = Target->GetActorLocation();
 
 	// Obtain the Navigation System and find a random location

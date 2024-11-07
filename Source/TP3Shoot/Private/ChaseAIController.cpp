@@ -66,17 +66,21 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(Actor);
 	
 	ACharacter* ChosenCharacter;
-	
-	if(ShootCharacter && Cast<AAIShootCharacter>(GetOwner())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
+	//UE_LOG(LogTemp, Warning, TEXT("The boolean value is %s"), ( Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy() ? TEXT("true") : TEXT("false") ));
+
+	if((ShootCharacter) && Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
 	{
 		ChosenCharacter = ShootCharacter;
-	}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetOwner())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
-	{
+	
+		}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
+	 {
+			UE_LOG(LogTemp,Display,TEXT("ChosenCharacter "));
 		ChosenCharacter = AICharacter;
-	}else
-	{
+	 }else
+	 {
 		return;
-	}
+	 }
+	//if(!ShootCharacter) return;
 	// Get the team id of the AI character
 	//int TeamId = Cast<ATP3ShootCharacter>(GetPawn())->TeamId;
 	//if (!ShootCharacter || ShootCharacter->TeamId == TeamId) return;

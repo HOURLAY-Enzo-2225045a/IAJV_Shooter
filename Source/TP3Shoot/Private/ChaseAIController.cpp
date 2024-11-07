@@ -3,6 +3,7 @@
 
 #include "ChaseAIController.h"
 
+#include "AIShootCharacter.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -62,11 +63,27 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"EventFired");
 	// Check actor is a TP3ShootCharacter
 	ATP3ShootCharacter* ShootCharacter = Cast<ATP3ShootCharacter>(Actor);
+	AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(Actor);
+	
+	ACharacter* ChosenCharacter;
+	//UE_LOG(LogTemp, Warning, TEXT("The boolean value is %s"), ( Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy() ? TEXT("true") : TEXT("false") ));
+
+	if((ShootCharacter) && Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
+	{
+		ChosenCharacter = ShootCharacter;
+	
+		}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
+	 {
+			UE_LOG(LogTemp,Display,TEXT("ChosenCharacter "));
+		ChosenCharacter = AICharacter;
+	 }else
+	 {
+		return;
+	 }
+	//if(!ShootCharacter) return;
 	// Get the team id of the AI character
 	//int TeamId = Cast<ATP3ShootCharacter>(GetPawn())->TeamId;
 	//if (!ShootCharacter || ShootCharacter->TeamId == TeamId) return;
-	if(!ShootCharacter) return;
-	
 	// check if stimulus is sight
 	if (Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 	{
@@ -76,7 +93,7 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 			// Set can see player to true
 			BlackboardComponent->SetValueAsBool("CanSeePlayer", true);
 			// Set target actor
-			BlackboardComponent->SetValueAsObject("Target", Actor);
+			BlackboardComponent->SetValueAsObject("Target", ChosenCharacter);
 			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Enter AI Sight");
 		}
 		else

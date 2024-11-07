@@ -70,6 +70,11 @@ AAIShootCharacter::AAIShootCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+bool AAIShootCharacter::GetIsEnemy()
+{
+	return isEnemy;
+}
+
 void AAIShootCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -123,9 +128,15 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		5
 		);
 		ATP3ShootCharacter* APlayer = Cast<ATP3ShootCharacter>(HitResult->GetActor());
+		AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(HitResult->GetActor());
+		
 		if(APlayer != NULL)
 		{
 			APlayer->OnHit();
+		}
+		if(AICharacter !=NULL)
+		{
+			AICharacter->OnHit(20);
 		}
 	}
 }

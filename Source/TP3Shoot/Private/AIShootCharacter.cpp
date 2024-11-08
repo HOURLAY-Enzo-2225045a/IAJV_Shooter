@@ -142,15 +142,23 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 }
 void AAIShootCharacter::OnHit(int damage, ACharacter* ShootingActor)
 {
-	Health -= damage;
-	HealthToMaxRatio = Health / 100.f;
-	//change widget here
-	ChaseAIController->setTarget(ShootingActor);
+	ATP3ShootCharacter* ShootCharacter = Cast<ATP3ShootCharacter>(ShootingActor); 
+	AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(ShootingActor);
 
-	if (Health<0.01)
-	{
-		Die();
+	if((ShootCharacter && isEnemy) || (AICharacter && AICharacter->GetIsEnemy() != isEnemy)) // no friendly fire
+	{                                                                                                         
+		Health -= damage;
+		HealthToMaxRatio = Health / 100.f;
+	
+		//change widget here
+		ChaseAIController->setFleeingTarget(ShootingActor);
+
+		if (Health<0.01)
+		{
+			Die();
+		}                                                                                              
 	}
+	
 	// UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
 

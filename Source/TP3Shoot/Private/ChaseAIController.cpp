@@ -104,7 +104,7 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	}
 }
 
-void AChaseAIController::setTarget(ACharacter* Actor)
+void AChaseAIController::setFleeingTarget(ACharacter* Actor)
 {
 	ATP3ShootCharacter* ShootCharacter = Cast<ATP3ShootCharacter>(Actor);
 	AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(Actor);
@@ -139,6 +139,6 @@ void AChaseAIController::setTarget(ACharacter* Actor)
 		return;
 	}
 	BlackboardComponent->SetValueAsBool("IsBeingShot", true);             
-	BlackboardComponent->SetValueAsObject("Target", ChosenCharacter);     
+	BlackboardComponent->SetValueAsObject("FleeingTarget", ChosenCharacter);     
 }
 

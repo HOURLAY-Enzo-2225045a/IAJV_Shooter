@@ -28,7 +28,7 @@ public:
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	UFUNCTION()
-	void setTarget(ACharacter* ACharacter);
+	void setFleeingTarget(ACharacter* ACharacter);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))

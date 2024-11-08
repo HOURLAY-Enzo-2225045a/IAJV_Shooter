@@ -74,7 +74,6 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	
 		}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
 	 {
-			UE_LOG(LogTemp,Display,TEXT("ChosenCharacter "));
 		ChosenCharacter = AICharacter;
 	 }else
 	 {
@@ -103,5 +102,43 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Max Age Reset");
 		}
 	}
+}
+
+void AChaseAIController::setFleeingTarget(ACharacter* Actor)
+{
+	ATP3ShootCharacter* ShootCharacter = Cast<ATP3ShootCharacter>(Actor);
+	AAIShootCharacter* AICharacter = Cast<AAIShootCharacter>(Actor);
+	
+	ACharacter* ChosenCharacter;
+	//UE_LOG(LogTemp, Warning, TEXT("The boolean value is %s"), ( Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy() ? TEXT("true") : TEXT("false") ));
+	if(ShootCharacter){
+		UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));   
+	}else if(AICharacter)
+	{
+		UE_LOG(LogTemp,Display,TEXT("IS ENEMY "));
+
+
+	}               else
+	{
+		UE_LOG(LogTemp,Display,TEXT("is NONEE222EE "));            
+	}
+	if((ShootCharacter) && Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
+	{
+		UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));
+
+		ChosenCharacter = ShootCharacter;
+	
+	}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
+	{
+		UE_LOG(LogTemp,Display,TEXT("IS ENEMY "));
+		ChosenCharacter = AICharacter;
+	}else
+	{
+		UE_LOG(LogTemp,Display,TEXT("is NONEEEE "));
+
+		return;
+	}
+	BlackboardComponent->SetValueAsBool("IsBeingShot", true);             
+	BlackboardComponent->SetValueAsObject("FleeingTarget", ChosenCharacter);     
 }
 

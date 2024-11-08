@@ -122,7 +122,7 @@ public:
 	// Is Firing
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Firing")
 	bool IsFiring;
-	void OnHit(int damage);
+	void OnHit(int damage,ACharacter* actor);
 void Die();
 void Fire(FVector TargetLocation);
 };

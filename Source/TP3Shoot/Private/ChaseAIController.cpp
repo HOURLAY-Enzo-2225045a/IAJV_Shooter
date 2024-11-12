@@ -111,17 +111,7 @@ void AChaseAIController::setFleeingTarget(ACharacter* Actor)
 	
 	ACharacter* ChosenCharacter;
 	//UE_LOG(LogTemp, Warning, TEXT("The boolean value is %s"), ( Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy() ? TEXT("true") : TEXT("false") ));
-	if(ShootCharacter){
-		UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));   
-	}else if(AICharacter)
-	{
-		UE_LOG(LogTemp,Display,TEXT("IS ENEMY "));
 
-
-	}               else
-	{
-		UE_LOG(LogTemp,Display,TEXT("is NONEE222EE "));            
-	}
 	if((ShootCharacter) && Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
 	{
 		UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));

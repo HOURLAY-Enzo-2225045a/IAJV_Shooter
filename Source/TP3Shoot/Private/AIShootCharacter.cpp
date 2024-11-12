@@ -14,6 +14,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "TP3Shoot/TP3ShootCharacter.h"
 
 
@@ -132,7 +133,7 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		
 		if(APlayer != NULL)
 		{
-			APlayer->OnHit(20);
+			APlayer->OnHit(1);
 		}
 		if(AICharacter !=NULL)
 		{
@@ -163,13 +164,18 @@ void AAIShootCharacter::Fire(FVector TargetLocation)
 {
 	FVector Start, LineTraceEnd, ForwardVector;
 
+	Aim();
+	
 	if (IsAiming)
 	{
 
-		Start = FollowCamera->GetComponentLocation();
+		// Get muzzle location
+		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
-		ForwardVector = (TargetLocation - Start).GetSafeNormal();// FollowCamera->GetForwardVector();
-			
+		// Get Rotation Forward Vector
+		ForwardVector = FollowCamera->GetForwardVector();
+
+		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
 	else {
@@ -184,6 +190,8 @@ void AAIShootCharacter::Fire(FVector TargetLocation)
 		LineTraceEnd = Start + (ForwardVector * 10000);
 	}
 	Raycast(Start, LineTraceEnd);
+
+	StopAiming();
 }
 
 

@@ -183,14 +183,6 @@ void ATP3ShootCharacter::Fire()
 	if (IsAiming)
 	{
 
-		Start = FollowCamera->GetComponentLocation();
-
-		ForwardVector = FollowCamera->GetForwardVector();
-
-		LineTraceEnd = Start + (ForwardVector * 10000);
-	}
-	else {
-
 		// Get muzzle location
 		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
@@ -199,6 +191,16 @@ void ATP3ShootCharacter::Fire()
 
 		// Get End Point
 		LineTraceEnd = Start + (ForwardVector * 10000);
+		
+	}
+	else {
+		Start = FollowCamera->GetComponentLocation();
+
+		ForwardVector = FollowCamera->GetForwardVector();
+
+		LineTraceEnd = Start + (ForwardVector * 10000);
+
+		
 	}
 	Raycast(Start,LineTraceEnd);
 }

@@ -129,6 +129,15 @@ void AChaseAIController::setFleeingTarget(ACharacter* Actor)
 		return;
 	}
 	BlackboardComponent->SetValueAsBool("IsBeingShot", true);             
-	BlackboardComponent->SetValueAsObject("FleeingTarget", ChosenCharacter);     
+	BlackboardComponent->SetValueAsObject("FleeingTarget", ChosenCharacter);
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"SetFleeingTimer");
+	GetWorld()->GetTimerManager().SetTimer(FleeTimerHandle,this,&AChaseAIController::UnsetFleeingTarget,10.0f,false);
+}
+
+void AChaseAIController::UnsetFleeingTarget()
+{
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"Stop Flee");
+	BlackboardComponent->SetValueAsBool("IsBeingShot", false);             
+	BlackboardComponent->SetValueAsObject("FleeingTarget", nullptr);
 }
 

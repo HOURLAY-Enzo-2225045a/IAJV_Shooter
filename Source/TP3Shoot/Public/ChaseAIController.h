@@ -17,10 +17,14 @@ public:
 	// Sets default values for this actor's properties
 	AChaseAIController();
 
+	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
+
+	FTimerHandle FleeTimerHandle;
 
 public:
 	// Called every frame
@@ -29,6 +33,8 @@ public:
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	UFUNCTION()
 	void setFleeingTarget(ACharacter* ACharacter);
+	UFUNCTION()
+	void UnsetFleeingTarget();
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))

@@ -3,6 +3,7 @@
 
 #include "AIShootCharacter.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -132,7 +133,7 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		
 		if(APlayer != NULL)
 		{
-			APlayer->OnHit();
+			APlayer->OnHit(10);
 		}
 		if(AICharacter !=NULL)
 		{
@@ -155,17 +156,28 @@ void AAIShootCharacter::OnHit(int damage, ACharacter* ShootingActor)
 
 		if (Health<0.01)
 		{
-			Die();
+			Respawn();
 		}                                                                                              
 	}
 	
 	// UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
-
+//unused
 void AAIShootCharacter::Die()
 {
 	Health = 0;
 	Destroy();
+}
+
+void AAIShootCharacter::Respawn()
+{
+	Health = 100;
+	HealthToMaxRatio = 1.f;
+	ChaseAIController->GetBlackboardComponent()->SetValueAsBool("IsBeingShot", false);
+
+	FVector RespawnLocation = isEnemy? FVector(1717,253,534) : FVector(1717,3200,534) ;
+	SetActorLocation(FVector(RespawnLocation));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"U Died");
 }
 
 void AAIShootCharacter::Fire(FVector TargetLocation)

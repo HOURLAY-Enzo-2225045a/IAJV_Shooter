@@ -124,5 +124,6 @@ public:
 	bool IsFiring;
 	void OnHit(int damage,ACharacter* actor);
 void Die();
+void Respawn();
 void Fire(FVector TargetLocation);
 };

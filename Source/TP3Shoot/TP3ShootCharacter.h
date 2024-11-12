@@ -28,8 +28,18 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+	
+	void OnHit(int damage);
+
+	void Respawn();
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float HealthToMaxRatio;
+
+	UPROPERTY(EditAnywhere, Category = Gameplay)
+	int Health;
 
 	// Add a gun skeletal mesh component
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
@@ -87,8 +97,7 @@ protected:
 	void RemoveSpeedBoost();
 
 	void FireParticle(FVector Start, FVector Impact);
-
-protected:
+	void BeginPlay() override;
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
@@ -99,7 +108,6 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	void OnHit();
 
 	// Is Aiming
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aiming")

@@ -3,6 +3,7 @@
 #include "TP3ShootCharacter.h"
 
 #include "AIShootCharacter.h"
+#include "TP3ShootGameMode.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -40,11 +41,37 @@ void ATP3ShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 	}
 }
 
-void ATP3ShootCharacter::OnHit()
+void ATP3ShootCharacter::OnHit(int damage)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"Player Hit");
+	Health -= damage;
+	HealthToMaxRatio = Health / 100.f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Health : %d"), Health));
+	//change widget here
+	
+	if (Health<0.01)
+	{
+		Respawn();
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
 
+//Not used
+void ATP3ShootCharacter::Die()
+{
+	Health = 0;
+	Destroy();
+	// RESPAWN
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"U Died");
+}
+
+void ATP3ShootCharacter::Respawn()
+{
+	Health = 100;
+	SetActorLocation(FVector(1980.0f, 3090.0f, 90.0f));
+	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"U Died");
+}
 
 ATP3ShootCharacter::ATP3ShootCharacter()
 {
@@ -218,6 +245,13 @@ void ATP3ShootCharacter::FireParticle(FVector Start, FVector Impact)
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleImpact, ParticleT, true);
 
+}
+
+void ATP3ShootCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	HealthToMaxRatio = 1.f;
+	Health = 100;
 }
 
 void ATP3ShootCharacter::TurnAtRate(float Rate)

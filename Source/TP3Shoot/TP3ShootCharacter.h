@@ -89,9 +89,16 @@ protected:
 	void FireParticle(FVector Start, FVector Impact);
 
 protected:
+	virtual void BeginPlay() override;
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gameplay")
+	float HealthToMaxRatio;
+
+	UPROPERTY(EditAnywhere, Category = Gameplay)
+	int Health;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -99,7 +106,11 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	void OnHit();
+	void OnHit(int damage);
+
+	void Die();
+
+	void Respawn();
 
 	// Is Aiming
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aiming")

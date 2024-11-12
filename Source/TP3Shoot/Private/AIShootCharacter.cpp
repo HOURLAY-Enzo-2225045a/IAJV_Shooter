@@ -132,7 +132,7 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		
 		if(APlayer != NULL)
 		{
-			APlayer->OnHit();
+			APlayer->OnHit(20);
 		}
 		if(AICharacter !=NULL)
 		{

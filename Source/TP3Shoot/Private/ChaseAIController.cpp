@@ -88,8 +88,6 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 	// check if stimulus is sight
 	if (Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 	{
-		float Age = Stimulus.GetAge();
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Stimulus Age: %f"), Age));
 		// if stimulus is sight, check if stimulus is sensed
 		if (Stimulus.WasSuccessfullySensed())
 		{
@@ -100,7 +98,8 @@ void AChaseAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus co
 			//BlackboardComponent->SetValueAsVector("LastKnownLocation", ChosenCharacter->GetActorLocation());
 			GEngine->AddOnScreenDebugMessage(4,5.0f,FColor::Orange,"Enter AI Sight");
 		}
-		/*else 
+		/* Not used anymore
+		else 
 		{
 			if (Stimulus.GetAge() < 6.0f)
 			{

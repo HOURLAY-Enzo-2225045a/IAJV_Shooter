@@ -13,6 +13,8 @@ class ATP3ShootGameMode : public AGameModeBase
 
 public:
 	ATP3ShootGameMode();
+
+	void RespawnPlayer();
 };
 
 

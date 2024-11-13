@@ -65,6 +65,7 @@ void ATP3ShootCharacter::OnHit(int damage)
 void ATP3ShootCharacter::Respawn()
 {
 	Health = 100;
+	HealthToMaxRatio = 1.f;
 	SetActorLocation(FVector(1980.0f, 3090.0f, 90.0f));
 	GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"U Died");
 }

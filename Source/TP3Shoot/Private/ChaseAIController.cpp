@@ -114,17 +114,17 @@ void AChaseAIController::setFleeingTarget(ACharacter* Actor)
 
 	if((ShootCharacter) && Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy()) // si le personnage est le joueur et sa propre équipe est l'équipe ennemie.
 	{
-		UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));
+		// UE_LOG(LogTemp,Display,TEXT("IS PLAYER "));
 
 		ChosenCharacter = ShootCharacter;
 	
 	}else if(AICharacter && AICharacter->GetIsEnemy() != Cast<AAIShootCharacter>(GetPawn())->GetIsEnemy())//Si le personnage est une IA et elle est dans la meme équipe que la sienne.
 	{
-		UE_LOG(LogTemp,Display,TEXT("IS ENEMY "));
+		// UE_LOG(LogTemp,Display,TEXT("IS ENEMY "));
 		ChosenCharacter = AICharacter;
 	}else
 	{
-		UE_LOG(LogTemp,Display,TEXT("is NONEEEE "));
+		// UE_LOG(LogTemp,Display,TEXT("is NONEEEE "));
 
 		return;
 	}

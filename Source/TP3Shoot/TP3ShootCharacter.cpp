@@ -49,7 +49,7 @@ void ATP3ShootCharacter::BeginPlay()
 
 void ATP3ShootCharacter::OnHit(int damage)
 {
-	 UE_LOG(LogTemp, Warning, TEXT("Hit!"));
+	 // UE_LOG(LogTemp, Warning, TEXT("Hit!"));
     Health -= damage;
     HealthToMaxRatio = Health / 100.f;
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Health : %f"), HealthToMaxRatio));
@@ -59,7 +59,7 @@ void ATP3ShootCharacter::OnHit(int damage)
     {
         Respawn();
     }
-    UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
+    // UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
 
 void ATP3ShootCharacter::Respawn()

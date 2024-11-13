@@ -30,7 +30,7 @@ EBTNodeResult::Type UBTTask_FocusOnTarget::ExecuteTask(UBehaviorTreeComponent& O
         if (TargetActor)
         {
             // SetFocus pour orienter la vue de l'IA vers la cible
-            AIController->SetFocus(TargetActor);
+            //AIController->SetFocus(TargetActor);
         }
         else
         {
@@ -57,7 +57,7 @@ void UBTTask_FocusOnTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
             FRotator TargetRotation = DirectionToTarget.Rotation();
 
             // Interpolation de la rotation pour un mouvement fluide
-            FRotator NewRotation = FMath::RInterpTo(AIActor->GetActorRotation(), TargetRotation, DeltaSeconds, 3.0f);
+            FRotator NewRotation = FMath::RInterpTo(AIActor->GetActorRotation(), TargetRotation, DeltaSeconds, 6.0f);
             AIActor->SetActorRotation(NewRotation);
         }
     }

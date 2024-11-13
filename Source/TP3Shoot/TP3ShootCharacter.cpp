@@ -50,17 +50,16 @@ void ATP3ShootCharacter::BeginPlay()
 void ATP3ShootCharacter::OnHit(int damage)
 {
 	 UE_LOG(LogTemp, Warning, TEXT("Hit!"));
-        GEngine->AddOnScreenDebugMessage(-1,5.0f,FColor::Green,"Player Hit");
-        Health -= damage;
-        HealthToMaxRatio = Health / 100.f;
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Health : %d"), Health));
-        //change widget here
-        
-        if (Health<0.01)
-        {
-            Respawn();
-        }
-        UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
+    Health -= damage;
+    HealthToMaxRatio = Health / 100.f;
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Health : %f"), HealthToMaxRatio));
+    //change widget here
+    
+    if (Health<0.01)
+    {
+        Respawn();
+    }
+    UE_LOG(LogTemp, Warning, TEXT("Hit!%f"), HealthToMaxRatio);
 }
 
 void ATP3ShootCharacter::Respawn()

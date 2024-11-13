@@ -153,7 +153,7 @@ void AAIShootCharacter::OnHit(int damage, ACharacter* ShootingActor)
 	
 		//change widget here
 		ChaseAIController->setFleeingTarget(ShootingActor);
-
+	
 		if (Health<0.01)
 		{
 			Respawn();
@@ -183,27 +183,16 @@ void AAIShootCharacter::Respawn()
 void AAIShootCharacter::Fire(FVector TargetLocation)
 {
 	FVector Start, LineTraceEnd, ForwardVector;
+	
+	// Get muzzle location
+	Start = SK_Gun->GetSocketLocation("MuzzleFlash");
 
-	if (IsAiming)
-	{
+	// Get Rotation Forward Vector
+	ForwardVector = FollowCamera->GetForwardVector();
 
-		Start = FollowCamera->GetComponentLocation();
-
-		ForwardVector = (TargetLocation - Start).GetSafeNormal();// FollowCamera->GetForwardVector();
-			
-		LineTraceEnd = Start + (ForwardVector * 10000);
-	}
-	else {
-
-		// Get muzzle location
-		Start = SK_Gun->GetSocketLocation("MuzzleFlash");
-
-		// Get Rotation Forward Vector
-		ForwardVector = FollowCamera->GetForwardVector();
-
-		// Get End Point
-		LineTraceEnd = Start + (ForwardVector * 10000);
-	}
+	// Get End Point
+	LineTraceEnd = Start + (ForwardVector * 10000);
+	
 	Raycast(Start, LineTraceEnd);
 }
 

@@ -15,6 +15,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "TP3Shoot/TP3ShootCharacter.h"
 
 
@@ -138,6 +140,26 @@ void AAIShootCharacter::Raycast(FVector StartTrace, FVector EndTrace)
 		if(AICharacter !=NULL)
 		{
 			AICharacter->OnHit(20,this);
+		}
+		
+		// Spawn Niagara Beam Effect
+		if (LaserBeamEffect)
+		{
+			UNiagaraComponent* Beam = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(),
+				LaserBeamEffect,
+				StartTrace
+			);
+
+			if (Beam)
+			{
+				// Set the beam's start and end positions
+				Beam->SetVectorParameter(FName("BeamStart"), StartTrace);
+				Beam->SetVectorParameter(FName("BeamEnd"), HitResult->ImpactPoint);
+
+				// Activation du système Niagara
+				Beam->Activate();
+			}
 		}
 	}
 }

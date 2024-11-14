@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ChaseAIController.h"
 #include "GameFramework/Character.h"
+#include "NiagaraSystem.h"
 #include "AIShootCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -30,11 +31,14 @@ public:
 	AAIShootCharacter();
 	bool GetIsEnemy();
 
-void BeginPlay();
+	void BeginPlay();
 
-/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UNiagaraSystem* LaserBeamEffect;
 	
 protected:
 	

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "NiagaraSystem.h"
 #include "TP3ShootCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -32,6 +33,9 @@ public:
 	void OnHit(int damage);
 
 	void Respawn();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UNiagaraSystem* LaserBeamEffect;
 
 protected:
 
